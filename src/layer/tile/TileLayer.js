@@ -181,7 +181,7 @@ L.TileLayer = L.Class.extend({
 			}
 		}
 
-		this.options.zIndex = this._container.style.zIndex = (isFinite(edgeZIndex) ? edgeZIndex : 0) + compare(1, -1);
+		this._container.style.zIndex = isFinite(edgeZIndex) ? edgeZIndex + compare(1, -1) : '';
 	},
 
 	_updateOpacity: function () {
@@ -245,8 +245,7 @@ L.TileLayer = L.Class.extend({
 	},
 
 	_update: function (e) {
-
-		if (!this._map) { return; }
+		if (this._map._panTransition && this._map._panTransition._inProgress) { return; }
 
 		var bounds   = this._map.getPixelBounds(),
 		    zoom     = this._map.getZoom(),

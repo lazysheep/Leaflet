@@ -23,9 +23,13 @@ L.Icon = L.Class.extend({
 	createShadow: function () {
 		return this._createIcon('shadow');
 	},
-
+	/**
+	 * [_createIcon 创建图片]
+	 * @param  {[String]} name [icon||shadow]
+	 * @return {[HTMLElement]}      [图片元素]
+	 */
 	_createIcon: function (name) {
-		var src = this._getIconUrl(name);
+		var src = this._getIconUrl(name);//得到url
 
 		if (!src) {
 			if (name === 'icon') {
@@ -34,40 +38,48 @@ L.Icon = L.Class.extend({
 			return null;
 		}
 
-		var img = this._createImg(src);
-		this._setIconStyles(img, name);
+		var img = this._createImg(src);//创建图片元素
+		this._setIconStyles(img, name);//设置样式
 
 		return img;
 	},
-
+	/**
+	 * [_setIconStyles 设置图片样式]
+	 * @param {[HTMLElement]} img  [图片元素]
+	 * @param {[String]} name [icon||shadow]
+	 */
 	_setIconStyles: function (img, name) {
 		var options = this.options,
 			size = L.point(options[name + 'Size']),
 			anchor;
 
-		if (name === 'shadow') {
+		if (name === 'shadow') {//从属性得到偏移量
 			anchor = L.point(options.shadowAnchor || options.iconAnchor);
 		} else {
 			anchor = L.point(options.iconAnchor);
 		}
 
-		if (!anchor && size) {
+		if (!anchor && size) {//如果属性没设置偏移量，但设置了尺寸，偏移量为中心
 			anchor = size.divideBy(2, true);
 		}
 
 		img.className = 'leaflet-marker-' + name + ' ' + options.className;
 
-		if (anchor) {
+		if (anchor) {//设置图片偏移位置
 			img.style.marginLeft = (-anchor.x) + 'px';
 			img.style.marginTop  = (-anchor.y) + 'px';
 		}
 
-		if (size) {
+		if (size) {//设置图片尺寸
 			img.style.width  = size.x + 'px';
 			img.style.height = size.y + 'px';
 		}
 	},
-
+	/**
+	 * [_createImg 创建icon元素]
+	 * @param  {[String]} src [图片url]
+	 * @return {[HTMLElement]}     [图片元素]
+	 */
 	_createImg: function (src) {
 		var el;
 
@@ -80,7 +92,11 @@ L.Icon = L.Class.extend({
 		}
 		return el;
 	},
-
+	/**
+	 * [_getIconUrl 从options中获得url]
+	 * @param  {[String]} name [icon/shadow]
+	 * @return {[String]}      [url]
+	 */
 	_getIconUrl: function (name) {
 		return this.options[name + 'Url'];
 	}

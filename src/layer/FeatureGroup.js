@@ -1,7 +1,7 @@
 /*
  * L.FeatureGroup extends L.LayerGroup by introducing mouse events and bindPopup method shared between a group of layers.
  */
-
+//layerGroup的子类，图层组共享鼠标事件和绑定popup
 L.FeatureGroup = L.LayerGroup.extend({
 	includes: L.Mixin.Events,
 

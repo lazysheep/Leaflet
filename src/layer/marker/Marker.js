@@ -32,7 +32,10 @@ L.Marker = L.Class.extend({
 			map.on('zoomanim', this._animateZoom, this);
 		}
 	},
-
+	/**
+	 * [addTo 加到地图上，addlayer的反响操作，单纯提高灵活性，方便级联操作]
+	 * @param {[type]} map [description]
+	 */
 	addTo: function (map) {
 		map.addLayer(this);
 		return this;
@@ -85,7 +88,10 @@ L.Marker = L.Class.extend({
 			this.update();
 		}
 	},
-
+	/**
+	 * [update 重置点位置]
+	 * @return {[type]} [description]
+	 */
 	update: function () {
 		if (!this._icon) { return; }
 
@@ -203,14 +209,17 @@ L.Marker = L.Class.extend({
 			L.DomEvent.stopPropagation(e);
 		}
 	},
-
+	/**
+	 * [setOpacity 设置透明度]
+	 * @param {[type]} opacity [description]
+	 */
 	setOpacity: function (opacity) {
 		this.options.opacity = opacity;
 		if (this._map) {
 			this._updateOpacity();
 		}
 	},
-
+	
 	_updateOpacity: function () {
 		L.DomUtil.setOpacity(this._icon, this.options.opacity);
 		if (this._shadow) {

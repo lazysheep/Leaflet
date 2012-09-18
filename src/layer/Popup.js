@@ -2,7 +2,10 @@
 L.Map.mergeOptions({
 	closePopupOnClick: true
 });
-
+/**
+ * [Popup 弹窗类]
+ * @type {[type]}
+ */
 L.Popup = L.Class.extend({
 	includes: L.Mixin.Events,
 
@@ -22,7 +25,11 @@ L.Popup = L.Class.extend({
 
 		this._source = source;
 	},
-
+	/**
+	 * [onAdd 加到地图容器中]
+	 * @param  {[type]} map [description]
+	 * @return {[type]}     [description]
+	 */
 	onAdd: function (map) {
 		this._map = map;
 

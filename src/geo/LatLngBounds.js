@@ -3,6 +3,12 @@
  */
 
 L.LatLngBounds = L.Class.extend({
+	/**
+	 * [initialize 初始化函数，参数(LatLng, LatLng) or (LatLng[])]
+	 * @param  {[Array||LatLng]} southWest  [description]
+	 * @param  {[LatLng]} northEast [description]
+	 * @return {[type]}            [description]
+	 */
 	initialize: function (southWest, northEast) {	// (LatLng, LatLng) or (LatLng[])
 		if (!southWest) { return; }
 
@@ -14,6 +20,11 @@ L.LatLngBounds = L.Class.extend({
 	},
 
 	// extend the bounds to contain the given point or bounds
+	/**
+	 * [extend 延伸bounds包含点或bounds]
+	 * @param  {[Array||LatLng||LatLngbounds]} obj [description]
+	 * @return {[type]}      [description]
+	 */
 	extend: function (obj) { // (LatLng) or (LatLngBounds)
 		if (typeof obj[0] === 'number' || obj instanceof L.LatLng) {
 			obj = L.latLng(obj);
@@ -22,17 +33,17 @@ L.LatLngBounds = L.Class.extend({
 		}
 
 		if (obj instanceof L.LatLng) {
-			if (!this._southWest && !this._northEast) {
+			if (!this._southWest && !this._northEast) {//初始化
 				this._southWest = new L.LatLng(obj.lat, obj.lng, true);
 				this._northEast = new L.LatLng(obj.lat, obj.lng, true);
-			} else {
+			} else {//扩充bounds使包含传进的经纬度对象
 				this._southWest.lat = Math.min(obj.lat, this._southWest.lat);
 				this._southWest.lng = Math.min(obj.lng, this._southWest.lng);
 
 				this._northEast.lat = Math.max(obj.lat, this._northEast.lat);
 				this._northEast.lng = Math.max(obj.lng, this._northEast.lng);
 			}
-		} else if (obj instanceof L.LatLngBounds) {
+		} else if (obj instanceof L.LatLngBounds) {//参数如果是bounds扩充this，使包含参数bounds
 			this.extend(obj._southWest);
             this.extend(obj._northEast);
 		}
@@ -40,17 +51,25 @@ L.LatLngBounds = L.Class.extend({
 	},
 
 	// extend the bounds by a percentage
+	/**
+	 * [pad bounds按指定比率扩大]
+	 * @param  {[Number]} bufferRatio [比率]
+	 * @return {[LatLngBounds]}  [扩大后的bounds]
+	 */
 	pad: function (bufferRatio) { // (Number) -> LatLngBounds
 		var sw = this._southWest,
 			ne = this._northEast,
-			heightBuffer = Math.abs(sw.lat - ne.lat) * bufferRatio,
+			heightBuffer = Math.abs(sw.lat - ne.lat) * bufferRatio,//bounds差值乘以比率
 			widthBuffer = Math.abs(sw.lng - ne.lng) * bufferRatio;
 
-		return new L.LatLngBounds(
+		return new L.LatLngBounds(//原bounds四向各扩冲一个乘以比率后的差值，形成新bounds
 			new L.LatLng(sw.lat - heightBuffer, sw.lng - widthBuffer),
 			new L.LatLng(ne.lat + heightBuffer, ne.lng + widthBuffer));
 	},
-
+	/**
+	 * [getCenter 得到bounds中心点]
+	 * @return {[LatLng]} [中心点对象]
+	 */
 	getCenter: function () { // -> LatLng
 		return new L.LatLng(
 				(this._southWest.lat + this._northEast.lat) / 2,
@@ -72,7 +91,11 @@ L.LatLngBounds = L.Class.extend({
 	getSouthEast: function () {
 		return new L.LatLng(this._southWest.lat, this._northEast.lng, true);
 	},
-
+	/**
+	 * [contains 参数bounds或参数latlng是否包含在thisbounds里]
+	 * @param  {[type]} obj  [description]
+	 * @return {[Boolean]}      [description]
+	 */
 	contains: function (obj) { // (LatLngBounds) or (LatLng) -> Boolean
 		if (typeof obj[0] === 'number' || obj instanceof L.LatLng) {
 			obj = L.latLng(obj);
@@ -94,7 +117,11 @@ L.LatLngBounds = L.Class.extend({
 		return (sw2.lat >= sw.lat) && (ne2.lat <= ne.lat) &&
 				(sw2.lng >= sw.lng) && (ne2.lng <= ne.lng);
 	},
-
+	/**
+	 * [intersects 参数bounds是否与thisbounds相交]
+	 * @param  {[type]} bounds [description]
+	 * @return {[Boolean]}         [description]
+	 */
 	intersects: function (bounds) { // (LatLngBounds)
 		bounds = L.latLngBounds(bounds);
 
@@ -108,13 +135,20 @@ L.LatLngBounds = L.Class.extend({
 
 		return latIntersects && lngIntersects;
 	},
-
+	/**
+	 * [toBBoxString 转换成字符串，以逗号相连]
+	 * @return {[String]} [description]
+	 */
 	toBBoxString: function () {
 		var sw = this._southWest,
 			ne = this._northEast;
 		return [sw.lng, sw.lat, ne.lng, ne.lat].join(',');
 	},
-
+	/**
+	 * [equals 是否相等]
+	 * @param  {[type]} bounds) {            // (LatLngBounds [description]
+	 * @return {[type]}         [description]
+	 */
 	equals: function (bounds) { // (LatLngBounds)
 		if (!bounds) { return false; }
 
@@ -122,15 +156,14 @@ L.LatLngBounds = L.Class.extend({
 
 		return this._southWest.equals(bounds.getSouthWest()) &&
 		       this._northEast.equals(bounds.getNorthEast());
-	},
-
-	isValid: function () {
-		return !!(this._southWest && this._northEast);
 	}
 });
 
 //TODO International date line?
-
+/**
+ * [latLngBounds 多种形式参数，转换成latlngbounds]
+ * @return {[type]}        [description]
+ */
 L.latLngBounds = function (a, b) { // (LatLngBounds) or (LatLng, LatLng)
 	if (!a || a instanceof L.LatLngBounds) {
 		return a;

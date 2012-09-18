@@ -4,22 +4,29 @@
 
 L.DomEvent = {
 	/* inpired by John Resig, Dean Edwards and YUI addEvent implementations */
+	/**
+	 * [addListener 为dom绑定事件]
+	 * @param {[HTMLElement]}   obj       [dom]
+	 * @param {[String]}   type      [事件类型]
+	 * @param {Function} fn        [相应函数]
+	 * @param {[obj]}   context [fn的上下文]
+	 */
 	addListener: function (obj, type, fn, context) { // (HTMLElement, String, Function[, Object])
 
-		var id = L.Util.stamp(fn),
+		var id = L.Util.stamp(fn),//获取fn[key]值
 			key = '_leaflet_' + type + id,
 			handler, originalHandler, newType;
 
-		if (obj[key]) { return this; }
+		if (obj[key]) { return this; }//如果已绑定，返回
 
 		handler = function (e) {
 			return fn.call(context || obj, e || L.DomEvent._getEvent());
 		};
-
+		//手持双击
 		if (L.Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
 			return this.addDoubleTapListener(obj, handler, id);
 
-		} else if ('addEventListener' in obj) {
+		} else if ('addEventListener' in obj) {//支持addEventListener
 			
 			if (type === 'mousewheel') {
 				obj.addEventListener('DOMMouseScroll', handler, false);
@@ -41,15 +48,20 @@ L.DomEvent = {
 				obj.addEventListener(type, handler, false);
 			}
 
-		} else if ('attachEvent' in obj) {
+		} else if ('attachEvent' in obj) {//支持attachEvent
 			obj.attachEvent("on" + type, handler);
 		}
 
-		obj[key] = handler;
+		obj[key] = handler;//已绑定标识
 
 		return this;
 	},
-
+	/**
+	 * [removeListener 解除dom绑定]
+	 * @param  {[HTMLElement]} obj      [dom]
+	 * @param  {[String]} type     [事件类型]
+	 * @param  {[Function]} fn [响应函数]
+	 */
 	removeListener: function (obj, type, fn) {  // (HTMLElement, String, Function)
 
 		var id = L.Util.stamp(fn),
@@ -80,7 +92,11 @@ L.DomEvent = {
 
 		return this;
 	},
-
+	/**
+	 * [stopPropagation 阻止冒泡]
+	 * @param  {[object]} e [事件对象]
+	 * @return {[type]}   [description]
+	 */
 	stopPropagation: function (e) {
 
 		if (e.stopPropagation) {
@@ -90,7 +106,11 @@ L.DomEvent = {
 		}
 		return this;
 	},
-
+	/**
+	 * [disableClickPropagation 阻止点击冒泡]
+	 * @param  {[HTMLElement]} el [dom]
+	 * @return {[type]}    [description]
+	 */
 	disableClickPropagation: function (el) {
 
 		var stop = L.DomEvent.stopPropagation;
@@ -101,6 +121,11 @@ L.DomEvent = {
 			.addListener(el, 'dblclick', stop);
 	},
 
+	/**
+	 * [preventDefault 阻止标签默认行为]
+	 * @param  {[type]} e [事件对象]
+	 * @return {[type]}   [description]
+	 */
 	preventDefault: function (e) {
 
 		if (e.preventDefault) {
@@ -110,7 +135,11 @@ L.DomEvent = {
 		}
 		return this;
 	},
-
+	/**
+	 * [stop 同时阻止默认行为和冒泡]
+	 * @param  {[type]} e [description]
+	 * @return {[type]}   [description]
+	 */
 	stop: function (e) {
 		return L.DomEvent.preventDefault(e).stopPropagation(e);
 	},
@@ -125,7 +154,11 @@ L.DomEvent = {
 
 		return (container ? pos._subtract(L.DomUtil.getViewportOffset(container)) : pos);
 	},
-
+	/**
+	 * [getWheelDelta 跨浏览器取得滚轮滚动值]
+	 * @param  {[type]} e [事件对象]
+	 * @return {[Number]}   [滚轮滚动值]
+	 */
 	getWheelDelta: function (e) {
 
 		var delta = 0;

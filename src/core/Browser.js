@@ -1,3 +1,7 @@
+/**
+ * [ 用户代理检测对象，封在L.Browser,用闭包将变量私有化，不污染全局对象]
+ * @return {[type]} [description]
+ */
 (function () {
 	var ua = navigator.userAgent.toLowerCase(),
 		ie = !!window.ActiveXObject,

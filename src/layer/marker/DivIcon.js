@@ -1,3 +1,7 @@
+/**
+ * [DivIcon html图片，也就是自定义图片，超类是Icon]
+ * @type {[type]}
+ */
 L.DivIcon = L.Icon.extend({
 	options: {
 		iconSize: new L.Point(12, 12), // also can be set through CSS
@@ -9,7 +13,10 @@ L.DivIcon = L.Icon.extend({
 		*/
 		className: 'leaflet-div-icon'
 	},
-
+	/**
+	 * [createIcon 重写超类方法，创建图片div]
+	 * @return {[HTMLElement]} [图片div]
+	 */
 	createIcon: function () {
 		var div = document.createElement('div'),
 		    options = this.options;

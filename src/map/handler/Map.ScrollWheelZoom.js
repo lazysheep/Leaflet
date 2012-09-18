@@ -22,14 +22,8 @@ L.Map.ScrollWheelZoom = L.Handler.extend({
 		this._delta += delta;
 		this._lastMousePos = this._map.mouseEventToContainerPoint(e);
 
-		if (!this._startTime) {
-			this._startTime = +new Date();
-		}
-
-		var left = Math.max(40 - (+new Date() - this._startTime), 0);
-
 		clearTimeout(this._timer);
-		this._timer = setTimeout(L.Util.bind(this._performZoom, this), left);
+		this._timer = setTimeout(L.Util.bind(this._performZoom, this), 40);
 
 		L.DomEvent.preventDefault(e);
 	},
@@ -44,22 +38,20 @@ L.Map.ScrollWheelZoom = L.Handler.extend({
 
 		this._delta = 0;
 
-		this._startTime = null;
-
 		if (!delta) { return; }
 
 		var newZoom = zoom + delta,
-			newCenter = this._getCenterForScrollWheelZoom(newZoom);
+			newCenter = this._getCenterForScrollWheelZoom(this._lastMousePos, newZoom);
 
 		map.setView(newCenter, newZoom);
 	},
 
-	_getCenterForScrollWheelZoom: function (newZoom) {
+	_getCenterForScrollWheelZoom: function (mousePos, newZoom) {
 		var map = this._map,
 			scale = map.getZoomScale(newZoom),
-			viewHalf = map.getSize()._divideBy(2),
-			centerOffset = this._lastMousePos._subtract(viewHalf)._multiplyBy(1 - 1 / scale),
-			newCenterPoint = map._getTopLeftPoint()._add(viewHalf)._add(centerOffset);
+			viewHalf = map.getSize().divideBy(2),
+			centerOffset = mousePos.subtract(viewHalf).multiplyBy(1 - 1 / scale),
+			newCenterPoint = map._getTopLeftPoint().add(viewHalf).add(centerOffset);
 
 		return map.unproject(newCenterPoint);
 	}

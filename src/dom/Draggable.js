@@ -1,10 +1,13 @@
 /*
  * L.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
  */
-
+/**
+ * [Draggable 拖拽类]
+ * @type {[type]}
+ */
 L.Draggable = L.Class.extend({
 	includes: L.Mixin.Events,
-
+	//静态属性
 	statics: {
 		START: L.Browser.touch ? 'touchstart' : 'mousedown',
 		END: L.Browser.touch ? 'touchend' : 'mouseup',
@@ -35,12 +38,9 @@ L.Draggable = L.Class.extend({
 	},
 
 	_onDown: function (e) {
-		if ((!L.Browser.touch && e.shiftKey) ||
-			((e.which !== 1) && (e.button !== 1) && !e.touches)) { return; }
-
-		L.DomEvent.preventDefault(e);
-
-		if (L.Draggable._disabled) { return; }
+		if ((!L.Browser.touch && e.shiftKey) || ((e.which !== 1) && (e.button !== 1) && !e.touches)) {
+			return;
+		}
 
 		this._simulateClick = true;
 
@@ -52,6 +52,8 @@ L.Draggable = L.Class.extend({
 		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e),
 			el = first.target;
 
+		L.DomEvent.preventDefault(e);
+
 		if (L.Browser.touch && el.tagName.toLowerCase() === 'a') {
 			L.DomUtil.addClass(el, 'leaflet-active');
 		}
@@ -61,8 +63,8 @@ L.Draggable = L.Class.extend({
 			return;
 		}
 
-		this._startPoint = new L.Point(first.clientX, first.clientY);
 		this._startPos = this._newPos = L.DomUtil.getPosition(this._element);
+		this._startPoint = new L.Point(first.clientX, first.clientY);
 
 		L.DomEvent.on(document, L.Draggable.MOVE, this._onMove, this);
 		L.DomEvent.on(document, L.Draggable.END, this._onUp, this);
@@ -82,8 +84,6 @@ L.Draggable = L.Class.extend({
 		if (!this._moved) {
 			this.fire('dragstart');
 			this._moved = true;
-
-			this._startPos = L.DomUtil.getPosition(this._element).subtract(diffVec);
 
 			if (!L.Browser.touch) {
 				L.DomUtil.disableTextSelection();

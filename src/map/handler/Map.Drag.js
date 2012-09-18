@@ -6,9 +6,9 @@ L.Map.mergeOptions({
 	dragging: true,
 
 	inertia: !L.Browser.android23,
-	inertiaDeceleration: 3400, // px/s^2
-	inertiaMaxSpeed: 6000, // px/s
-	inertiaThreshold: L.Browser.touch ? 32 : 18, // ms
+	inertiaDeceleration: 3000, // px/s^2
+	inertiaMaxSpeed: 1500, // px/s
+	inertiaThreshold: L.Browser.touch ? 32 : 14, // ms
 
 	// TODO refactor, move to CRS
 	worldCopyJump: true
@@ -46,13 +46,13 @@ L.Map.Drag = L.Handler.extend({
 	_onDragStart: function () {
 		var map = this._map;
 
-		if (map._panAnim) {
-			map._panAnim.stop();
-		}
-
 		map
 			.fire('movestart')
 			.fire('dragstart');
+
+		if (map._panTransition) {
+			map._panTransition._onTransitionEnd(true);
+		}
 
 		if (map.options.inertia) {
 			this._positions = [];
@@ -80,7 +80,7 @@ L.Map.Drag = L.Handler.extend({
 	},
 
 	_onViewReset: function () {
-		var pxCenter = this._map.getSize()._divideBy(2),
+		var pxCenter = this._map.getSize().divideBy(2),
 			pxWorldCenter = this._map.latLngToLayerPoint(new L.LatLng(0, 0));
 
 		this._initialWorldOffset = pxWorldCenter.subtract(pxCenter).x;
@@ -127,8 +127,13 @@ L.Map.Drag = L.Handler.extend({
 				decelerationDuration = limitedSpeed / options.inertiaDeceleration,
 				offset = limitedSpeedVector.multiplyBy(-decelerationDuration / 2).round();
 
+			var panOptions = {
+				duration: decelerationDuration,
+				easing: 'ease-out'
+			};
+
 			L.Util.requestAnimFrame(L.Util.bind(function () {
-				this._map.panBy(offset, decelerationDuration);
+				this._map.panBy(offset, panOptions);
 			}, this));
 		}
 

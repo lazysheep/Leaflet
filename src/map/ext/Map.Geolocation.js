@@ -11,7 +11,7 @@ L.Map.include({
 		maximumAge: 0,
 		enableHighAccuracy: false
 	},
-
+	//定位
 	locate: function (/*Object*/ options) {
 
 		options = this._locationOptions = L.Util.extend(this._defaultLocateOptions, options);

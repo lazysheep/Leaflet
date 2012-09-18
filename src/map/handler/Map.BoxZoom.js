@@ -5,7 +5,10 @@
 L.Map.mergeOptions({
 	boxZoom: true
 });
-
+/**
+ * [BoxZoom 疑似拉框放大]
+ * @type {[type]}
+ */
 L.Map.BoxZoom = L.Handler.extend({
 	initialize: function (map) {
 		this._map = map;

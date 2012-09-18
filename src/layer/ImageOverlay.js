@@ -1,4 +1,4 @@
-L.ImageOverlay = L.Class.extend({
+L.ImageOverlay = L.Class.extend({//图片覆盖物类
 	includes: L.Mixin.Events,
 
 	options: {
@@ -94,11 +94,10 @@ L.ImageOverlay = L.Class.extend({
 		    scale = map.getZoomScale(e.zoom),
 		    nw = this._bounds.getNorthWest(),
 		    se = this._bounds.getSouthEast(),
-
 		    topLeft = map._latLngToNewLayerPoint(nw, e.zoom, e.center),
-		    size = map._latLngToNewLayerPoint(se, e.zoom, e.center)._subtract(topLeft),
-		    currentSize = map.latLngToLayerPoint(se)._subtract(map.latLngToLayerPoint(nw)),
-		    origin = topLeft._add(size._subtract(currentSize)._divideBy(2));
+		    size = map._latLngToNewLayerPoint(se, e.zoom, e.center).subtract(topLeft),
+		    currentSize = map.latLngToLayerPoint(se).subtract(map.latLngToLayerPoint(nw)),
+		    origin = topLeft.add(size.subtract(currentSize).divideBy(2));
 
 		image.style[L.DomUtil.TRANSFORM] = L.DomUtil.getTranslateString(origin) + ' scale(' + scale + ') ';
 	},
@@ -106,7 +105,7 @@ L.ImageOverlay = L.Class.extend({
 	_reset: function () {
 		var image   = this._image,
 		    topLeft = this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
-		    size    = this._map.latLngToLayerPoint(this._bounds.getSouthEast())._subtract(topLeft);
+		    size    = this._map.latLngToLayerPoint(this._bounds.getSouthEast()).subtract(topLeft);
 
 		L.DomUtil.setPosition(image, topLeft);
 
